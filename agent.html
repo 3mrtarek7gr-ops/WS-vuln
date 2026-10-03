@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ShopLite — Support Agent Console</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="brand">
+      <div class="logo">S</div>
+      ShopLite
+      <span class="lab-badge">Security Lab</span>
+    </div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/chat.html">Live Chat</a>
+      <a href="/agent.html">Support Console</a>
+    </nav>
+  </div>
+
+  <div class="agent-wrap">
+    <div class="agent-header">
+      <h1>Support Agent Console</h1>
+      <span id="status-pill" class="status-pill">
+        <span class="dot"></span>
+        <span id="status-text">WebSocket Status: Connecting…</span>
+      </span>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-toolbar">
+        <span class="title">SUPPORT AGENT CONSOLE — live customer messages</span>
+        <span id="count">0 messages</span>
+      </div>
+      <div id="agent-messages" class="agent-messages"></div>
+    </div>
+  </div>
+
+
+
+  <script>
+    const statusPill = document.getElementById("status-pill");
+    const statusText = document.getElementById("status-text");
+    const messagesEl = document.getElementById("agent-messages");
+    const countEl = document.getElementById("count");
+
+    let count = 0;
+
+    const protocol = location.protocol === "https:" ? "wss://" : "ws://";
+    const ws = new WebSocket(protocol + location.host);
+
+    function setStatus(connected) {
+      if (connected) {
+        statusPill.classList.add("connected");
+        statusText.textContent = "WebSocket Status: Connected";
+      } else {
+        statusPill.classList.remove("connected");
+        statusText.textContent = "WebSocket Status: Disconnected";
+      }
+    }
+
+    ws.addEventListener("open", () => setStatus(true));
+    ws.addEventListener("close", () => setStatus(false));
+    ws.addEventListener("error", () => setStatus(false));
+
+    ws.addEventListener("message", (event) => {
+      let data;
+      try {
+        data = JSON.parse(event.data);
+      } catch (e) {
+        return; // not a chat frame we understand
+      }
+      if (!data || data.type !== "chat") return;
+
+      count += 1;
+      countEl.textContent = count + " message" + (count === 1 ? "" : "s");
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "agent-msg";
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = "Customer · " + new Date().toLocaleTimeString();
+      wrapper.appendChild(meta);
+
+      const rendered = document.createElement("div");
+      rendered.className = "rendered";
+
+      rendered.innerHTML = data.message;
+
+      wrapper.appendChild(rendered);
+      messagesEl.appendChild(wrapper);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    });
+  </script>
+
+</body>
+</html>

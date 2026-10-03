@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ShopLite — Live Chat</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="brand">
+      <div class="logo">S</div>
+      ShopLite
+      <span class="lab-badge">Security Lab</span>
+    </div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/chat.html">Live Chat</a>
+      <a href="/agent.html">Support Console</a>
+    </nav>
+  </div>
+
+  <div class="chat-wrap">
+    <div class="chat-card">
+      <div class="chat-header">
+        <h2>Live Chat with Support</h2>
+        <span id="status-pill" class="status-pill">
+          <span class="dot"></span>
+          <span id="status-text">WebSocket Status: Connecting…</span>
+        </span>
+      </div>
+
+
+
+      <div id="messages" class="chat-messages">
+        <div class="bubble system">You're chatting with ShopLite Support</div>
+      </div>
+
+      <div class="chat-input-row">
+        <input
+          id="chat-input"
+          type="text"
+          placeholder="Type a message…"
+          autocomplete="off"
+        />
+        <button id="send-btn" class="btn btn-primary">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/chat.js"></script>
+</body>
+</html>
